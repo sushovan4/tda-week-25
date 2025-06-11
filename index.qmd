@@ -1,12 +1,11 @@
 ---
-title: "<span class='pref'>Topological Stability and </span>Latschev-Type Reconstruction Theorems"
+title: "<span class='pref'>Topological and Geometric</span>Shape Reconstruction Beyond Manifolds "
 title-slide-attributes: 
   data-background-image: "drawing.png"
   data-background-opacity: "0.3"
-subtitle: <green>AMS Sectional Meeting, Clemson University, 2025</green>
-author: "<b>Sushovan Majhi</b>, *George Washington University, DC*"
+subtitle: <green>TDA Week, Kyoto University, 2025</green>
+author: "<b>Sushovan Majhi</b>, *George Washington University, DC*<br><br><i>with</i>: <green>Rafal Komendarczyk</green> & <green>Atish Mitra</green>"
 fig-cap-location: bottom
-html-math-method: mathml
 format: 
     revealjs:
         theme: dark
@@ -18,9 +17,10 @@ format:
 bibliography: references.bib
 editor: 
   render-on-save: true
+html-math-method: mathml
 ---
 
-## Today's Agenda
+# Today's Agenda
 - Our motivation
 - <green>Hausmann</green>'s *curious* question
 - <green>Latschev</green>'s remarkable (*but* <red>qualitative</red>!) answer
@@ -30,6 +30,233 @@ editor:
     - *Euclidean* submanifolds
 - Extension to $\mathrm{CAT}(\kappa)$ Spaces
 - <red>Questions</red>
+
+# The Problem of Shape Reconstruction
+
+## Shape of Data {.smaller}
+![A sample](sample_wedge.png)
+
+## Learn Topological and Geometric Features {.smaller}
+![A Reconstruction](wedge.png)
+
+- The <green>topology</green> is the wedge of two circles (two $1$-dimensional <red>cycles</red>)
+- The <green>geometry</green> is graph-like
+
+## <span class="green">Good</span> Shapes {.smaller}
+
+:::{layout-ncol="2"}
+![Circle](circle.png)
+
+![Donut](torus.png){width="100%"}
+:::
+
+## <span class="red">Bad</span> Shapes {.smaller}
+![Source: Daisy lane gifts](map.webp)
+
+## A Real Application {.smaller}
+![The City of Berlin](berlin.jpg)
+
+Q: How to draw the map of the city from a noisy point-cloud of GPS locations?
+
+## A Reconstruction of Berlin {.smaller}
+![Source: mapconstruction.org](mahmuda.jpg)
+
+## {background-iframe="https://www.smajhi.com/shape-reconstruction" background-interactive="true"}
+
+# <red>$\mathbb M$a$\tau$hem$\alpha$t$\iota$cal</red> Formulation {background-image="drawing.png" background-opacity="0.3"}
+
+##
+
+- <green>**Shape**</green>: A *Shape* is modeled as a metric space $(M,d_M)$
+  - <green>Riemannian manifold</green>
+  - <red>metric graph</red>
+  - <red>general metric *curvature* spaces</red>
+
+- <green>**Sample**</green>: A *finite* metric space $(X,d_X)$ *close* to $M$
+
+    - small <green>Hausdorff</green> proximity when both $M,X\subset\mathbb R^d$
+    - *alternatively*, small <red>Gromov--Hausdorff</red> distance when abstract.
+
+## Noise Model: Hausdorff Distance {.smaller background-color="white"}
+
+```{ojs}
+{
+  const height = "400px";
+  const container = d3.create("div").style("position", "relative");
+  let svg = container
+    .append("svg")
+    .attr("class", "canvas")
+    .style("width", "95%")
+    .style("border", "1px solid #eee")
+    .style("height", height);
+
+  drawBalls(svg);
+
+  svg.on("click", (e) => {
+    const coord = d3.pointer(e);
+    isA ? A.push(coord) : B.push(coord);
+    drawBalls(svg);
+  });
+  return container.node();
+}
+```
+
+
+```{ojs}
+//| panel: sidebar
+viewof scaleB = Inputs.range([0, 300], {
+  step: 1,
+  value: 0,
+  label: tex`r`
+});
+viewof scaleA = Inputs.range([0, 300], {
+  step: 1,
+  value: 0,
+  label: tex`r`
+});
+viewof isA = Inputs.toggle({ label: tex`X\text{ or }Y`, value: true });
+viewof btn1 = Inputs.button("clear", {
+  value: null,
+  reduce: () => {
+    A.length = 0;
+    B.length = 0;
+    viewof scaleA.value = 0;
+    viewof scaleB.value = 0;
+    viewof scaleA.dispatchEvent(new CustomEvent("input"));
+    viewof scaleB.dispatchEvent(new CustomEvent("input"));
+  }
+});
+```
+
+```{ojs}
+A = [];
+B = [];
+drawBalls = function (svg) {
+  svg
+    .selectAll(".A-ball")
+    .data(A)
+    .join("circle")
+    .attr("class", "A-ball")
+    .attr("cx", (d) => d[0])
+    .attr("cy", (d) => d[1])
+    .attr("r", scaleA)
+    .attr("fill", "green")
+    .attr("stroke", "none")
+    .attr("opacity", "0.1");
+  svg
+    .selectAll(".B-ball")
+    .data(B)
+    .join("circle")
+    .attr("class", "B-ball")
+    .attr("cx", (d) => d[0])
+    .attr("cy", (d) => d[1])
+    .attr("r", scaleB)
+    .attr("fill", "red")
+    .attr("stroke", "none")
+    .attr("opacity", "0.1");
+  svg
+    .selectAll(".A-vertex")
+    .data(A)
+    .join("circle")
+    .attr("class", "A-vertex")
+    .attr("cx", (d) => d[0])
+    .attr("cy", (d) => d[1])
+    .attr("r", "5px")
+    .attr("fill", "green")
+    .on("mouseover", function () {
+      d3.select(this).attr("fill", "orange").attr("r", "10px");
+    })
+    .on("mouseout", function () {
+      d3.select(this).attr("fill", "green").attr("r", "5px");
+    });
+  svg
+    .selectAll(".B-vertex")
+    .data(B)
+    .join("circle")
+    .attr("class", "B-vertex")
+    .attr("cx", (d) => d[0])
+    .attr("cy", (d) => d[1])
+    .attr("r", "5px")
+    .attr("fill", "red")
+    .on("mouseover", function () {
+      d3.select(this).attr("fill", "orange").attr("r", "10px");
+    })
+    .on("mouseout", function () {
+      d3.select(this).attr("fill", "red").attr("r", "5px");
+    });
+
+  return svg;
+}
+import { slider } from "@jashkenas/inputs"
+```
+
+```{ojs}
+tex`\vec{d}_H(X,Y)=${scaleB}`;
+tex`\vec{d}_H(Y,X)=${scaleA}`;
+tex`d_H(X,Y)=\max\{\vec{d}_H(X,Y), \vec{d}_H(Y,X)\}=\text{max\{ }${scaleA}, ${scaleB}\text{ \}}=${Math.max(scaleA, scaleB)}`;
+```
+
+## <green>Topological</green> Guarantees
+
+Estimate *only* the <green>Betti numbers</green> of $M$ (at various dimension $k$):
+
+- [<green>$k=0$</green>] number of connected components 
+- [<green>$k=1$</green>] cycles/loops
+- [<green>$k\geq2$</green>] voids, etc.
+
+  
+## <green>Topological</green> Guarantees {.smaller}
+
+Construct a topological space $\widetilde{M}$ from $X$ to retain the topology of $M$, i.e., $M\simeq\widetilde{M}$ in some appropriate sense:
+
+. . . 
+
+<red>Hidden</red> shape $M$:
+
+![](circle-1.png){fig-align="center"}
+
+. . . 
+
+<green>Reconstruction</green> $\widetilde{M}$:
+
+::: {layout-ncol="3"}
+
+
+![1. <green>homotopy equivalent</green>](mobius.png){width="80%"}
+
+![2. <green>homeomorphic</green>](circle-2.png){width="100%"}
+
+![3. <green>geometrically-close</green><br> in e.g. Hausdorff distance](circle-3.png){width="100%"}
+
+:::
+
+# The <green>Reconstruction</green> {background-image="drawing.png" background-opacity="0.3"}
+<green>Vietoris--Rips</green>, Cech, and $\alpha$-complexes and <red>Reeb graph</green>
+
+## The Vietoris--Rips Complex
+  - a metric space $(X,d_X)$
+  
+  - a scale $\beta>0$ 
+  
+   - $R_\beta(X)$ is an abstract simplicial complex such that
+   
+        - $X$ is the <green>vertex set</green>
+        - each <green>subset</green> $A\subset X$ of $(k+1)$ points with <green>diameter</green> at most $\beta$ is a $k$-simplex.
+
+
+## {background-iframe="https://www.smajhi.com/shape-reconstruction" background-interactive="true"}
+
+## The <green>Theme</green> of <red>My Research</red>
+
+- Provide a <green>window</green> of *resolutions* or *scales* for the Vietoris--Rips complexes for a <green>topologically-faithful</green> reconstruction
+- Design provable reconstruction algorithms particularly for <red>bad</red> shapes
+- Reconstruction under different noise models, e.g. the <green>Gromov--Hausdorff</green> distance
+- Probabilistic guarantees in the face  of <red>random samples</red>
+
+# Reconstruction via <green>Vietoris--Rips Complexes</green> {background-image="drawing.png" background-opacity="0.3"}
+
+# Gromov's Perspective on Shape Reconstruction
+
 
 ## The Vietoris--Rips Complexes {.smaller}
 
