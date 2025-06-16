@@ -31,7 +31,7 @@ html-math-method: mathml
 - Extension to $\mathrm{CAT}(\kappa)$ Spaces
 - <red>Questions</red>
 
-# The Problem of Shape Reconstruction
+# I. The <red>Problem</red> of Shape Reconstruction {background-image="drawing.png" background-opacity="0.3"}
 
 ## Shape of Data {.smaller}
 ![A sample](sample_wedge.png)
@@ -63,9 +63,8 @@ Q: How to draw the map of the city from a noisy point-cloud of GPS locations?
 
 ## {background-iframe="https://www.smajhi.com/shape-reconstruction" background-interactive="true"}
 
-# <red>$\mathbb M$a$\tau$hem$\alpha$t$\iota$cal</red> Formulation {background-image="drawing.png" background-opacity="0.3"}
+## <red>$\mathbb M$a$\tau$hem$\alpha$t$\iota$cal</red> Formulation {background-image="drawing.png" background-opacity="0.3"}
 
-##
 
 - <green>**Shape**</green>: A *Shape* is modeled as a metric space $(M,d_M)$
   - <green>Riemannian manifold</green>
@@ -196,7 +195,7 @@ tex`\vec{d}_H(Y,X)=${scaleA}`;
 tex`d_H(X,Y)=\max\{\vec{d}_H(X,Y), \vec{d}_H(Y,X)\}=\text{max\{ }${scaleA}, ${scaleB}\text{ \}}=${Math.max(scaleA, scaleB)}`;
 ```
 
-## <green>Topological</green> Guarantees
+## <green>Homological</green> Guarantees
 
 Estimate *only* the <green>Betti numbers</green> of $M$ (at various dimension $k$):
 
@@ -230,19 +229,6 @@ Construct a topological space $\widetilde{M}$ from $X$ to retain the topology of
 
 :::
 
-# The <green>Reconstruction</green> {background-image="drawing.png" background-opacity="0.3"}
-<green>Vietoris--Rips</green>, Cech, and $\alpha$-complexes and <red>Reeb graph</green>
-
-## The Vietoris--Rips Complex
-  - a metric space $(X,d_X)$
-  
-  - a scale $\beta>0$ 
-  
-   - $R_\beta(X)$ is an abstract simplicial complex such that
-   
-        - $X$ is the <green>vertex set</green>
-        - each <green>subset</green> $A\subset X$ of $(k+1)$ points with <green>diameter</green> at most $\beta$ is a $k$-simplex.
-
 
 ## {background-iframe="https://www.smajhi.com/shape-reconstruction" background-interactive="true"}
 
@@ -253,10 +239,40 @@ Construct a topological space $\widetilde{M}$ from $X$ to retain the topology of
 - Reconstruction under different noise models, e.g. the <green>Gromov--Hausdorff</green> distance
 - Probabilistic guarantees in the face  of <red>random samples</red>
 
-# Reconstruction via <green>Vietoris--Rips Complexes</green> {background-image="drawing.png" background-opacity="0.3"}
+# II. Reconstruction via <green>Vietoris--Rips Complexes</green> {background-image="drawing.png" background-opacity="0.3"}
 
-# Gromov's Perspective on Shape Reconstruction
+## Gromov's Perspective {.smaller}
+---Metric structures of Riemann & non-Riemann Spaces, *page100* 
 
+:::{.columns}
+
+:::{.column width="60%"}
+> Let $X$ be a length metric space...given by $\varepsilon$-nets $X_\varepsilon^{0}$ in $X$ which Hausdorff converges $X$...
+:::
+
+:::{.column  width="40%"}
+![](gromov-1.png)
+:::
+:::
+
+. . . 
+
+:::{.columns}
+
+:::{.column  width="60%"}
+> ...One can turn such a space into a path metric space, namely a graph $X_\varepsilon^{1}\subset X$ with $X_\varepsilon^{0}$ as its vertex set, and where two points $x$ and $y$ in $X_\varepsilon^{1}$ within distance $\delta\leq\delta_\varepsilon$ joined by an edge of length $\delta$.
+
+
+:::
+
+:::{.column  width="40%"}
+![](gromov-2.png)
+:::
+:::
+
+. . . 
+
+> ...fll in the small triangles of edges in the graph $X_\varepsilon^{1}$ by actual $2$-dimensional triangles to obtain $X_\varepsilon^{2}\subset X$, then $\pi_1(X_\varepsilon^{2})=\pi_1(X)$ for $\varepsilon,\delta_\varepsilon\to0$ with $\varepsilon/\delta_\varepsilon\to\infty$.
 
 ## The Vietoris--Rips Complexes {.smaller}
 
@@ -592,8 +608,9 @@ $$ for some $0<\xi<1/14$. Then, $\mathcal R_\beta(S)\simeq M$.
 
 :::
 
-## Quantitative Latschev's Theorem Beyond Manifolds {.smaller}
+# III. Beyond Manifolds {background-image="drawing.png" background-opacity="0.3"}
 
+## Quantitative Latschev's Theorem 
 - <red>Bad</red> spaces are ubiquitous in applications
   - manifolds with boundary or not a topological manifold
   - stratefied manifolds
@@ -612,13 +629,12 @@ $$ for some $0<\xi<1/14$. Then, $\mathcal R_\beta(S)\simeq M$.
 -  Intuitively, triangles in a $\mathrm{CAT}(\kappa)$ space are "slimmer" than corresponding "model triangles" in a standard space of constant curvature $\kappa$.
 :::
 
+# IV. Geometric Reconstruction {background-image="drawing.png" background-opacity="0.3"}
 
-## Future Directions {background-image="drawing.png" background-opacity="0.3"}
+# V. Future Directions {background-image="drawing.png" background-opacity="0.3"}
 
 - Hausmann's constant is not optimal
 - Are the better constants <green>$\epsilon_0$</green> and <red>$\delta$</red> for the quantitative Latschev's theorem?
-- For Euclidean shapes, <green>geometric reconstruction</green> using *Shadow Complexes* 
-  - Rafal Komendarczyk & Atish Mitra
 
 
 ## References {background-image="drawing.png" background-opacity="0.3"}
