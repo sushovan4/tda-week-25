@@ -31,249 +31,6 @@ html-math-method: mathml
 - Extension to $\mathrm{CAT}(\kappa)$ Spaces
 - <red>Questions</red>
 
-# I. The <red>Problem</red> of Shape Reconstruction {background-image="drawing.png" background-opacity="0.3"}
-
-## Shape of Data {.smaller}
-![A sample](sample_wedge.png)
-
-## Learn Topological and Geometric Features {.smaller}
-![A Reconstruction](wedge.png)
-
-- The <green>topology</green> is the wedge of two circles (two $1$-dimensional <red>cycles</red>)
-- The <green>geometry</green> is graph-like
-
-## <span class="green">Good</span> Shapes {.smaller}
-
-:::{layout-ncol="2"}
-![Circle](circle.png)
-
-![Donut](torus.png){width="100%"}
-:::
-
-## <span class="red">Bad</span> Shapes {.smaller}
-![Source: Daisy lane gifts](map.webp)
-
-## A Real Application {.smaller}
-![The City of Berlin](berlin.jpg)
-
-Q: How to draw the map of the city from a noisy point-cloud of GPS locations?
-
-## A Reconstruction of Berlin {.smaller}
-![Source: mapconstruction.org](mahmuda.jpg)
-
-## {background-iframe="https://www.smajhi.com/shape-reconstruction" background-interactive="true"}
-
-## <red>$\mathbb M$a$\tau$hem$\alpha$t$\iota$cal</red> Formulation {background-image="drawing.png" background-opacity="0.3"}
-
-
-- <green>**Shape**</green>: A *Shape* is modeled as a metric space $(M,d_M)$
-  - <green>Riemannian manifold</green>
-  - <red>metric graph</red>
-  - <red>general metric *curvature* spaces</red>
-
-- <green>**Sample**</green>: A *finite* metric space $(X,d_X)$ *close* to $M$
-
-    - small <green>Hausdorff</green> proximity when both $M,X\subset\mathbb R^d$
-    - *alternatively*, small <red>Gromov--Hausdorff</red> distance when abstract.
-
-## Noise Model: Hausdorff Distance {.smaller background-color="white"}
-
-```{ojs}
-{
-  const height = "400px";
-  const container = d3.create("div").style("position", "relative");
-  let svg = container
-    .append("svg")
-    .attr("class", "canvas")
-    .style("width", "95%")
-    .style("border", "1px solid #eee")
-    .style("height", height);
-
-  drawBalls(svg);
-
-  svg.on("click", (e) => {
-    const coord = d3.pointer(e);
-    isA ? A.push(coord) : B.push(coord);
-    drawBalls(svg);
-  });
-  return container.node();
-}
-```
-
-
-```{ojs}
-//| panel: sidebar
-viewof scaleB = Inputs.range([0, 300], {
-  step: 1,
-  value: 0,
-  label: tex`r`
-});
-viewof scaleA = Inputs.range([0, 300], {
-  step: 1,
-  value: 0,
-  label: tex`r`
-});
-viewof isA = Inputs.toggle({ label: tex`X\text{ or }Y`, value: true });
-viewof btn1 = Inputs.button("clear", {
-  value: null,
-  reduce: () => {
-    A.length = 0;
-    B.length = 0;
-    viewof scaleA.value = 0;
-    viewof scaleB.value = 0;
-    viewof scaleA.dispatchEvent(new CustomEvent("input"));
-    viewof scaleB.dispatchEvent(new CustomEvent("input"));
-  }
-});
-```
-
-```{ojs}
-A = [];
-B = [];
-drawBalls = function (svg) {
-  svg
-    .selectAll(".A-ball")
-    .data(A)
-    .join("circle")
-    .attr("class", "A-ball")
-    .attr("cx", (d) => d[0])
-    .attr("cy", (d) => d[1])
-    .attr("r", scaleA)
-    .attr("fill", "green")
-    .attr("stroke", "none")
-    .attr("opacity", "0.1");
-  svg
-    .selectAll(".B-ball")
-    .data(B)
-    .join("circle")
-    .attr("class", "B-ball")
-    .attr("cx", (d) => d[0])
-    .attr("cy", (d) => d[1])
-    .attr("r", scaleB)
-    .attr("fill", "red")
-    .attr("stroke", "none")
-    .attr("opacity", "0.1");
-  svg
-    .selectAll(".A-vertex")
-    .data(A)
-    .join("circle")
-    .attr("class", "A-vertex")
-    .attr("cx", (d) => d[0])
-    .attr("cy", (d) => d[1])
-    .attr("r", "5px")
-    .attr("fill", "green")
-    .on("mouseover", function () {
-      d3.select(this).attr("fill", "orange").attr("r", "10px");
-    })
-    .on("mouseout", function () {
-      d3.select(this).attr("fill", "green").attr("r", "5px");
-    });
-  svg
-    .selectAll(".B-vertex")
-    .data(B)
-    .join("circle")
-    .attr("class", "B-vertex")
-    .attr("cx", (d) => d[0])
-    .attr("cy", (d) => d[1])
-    .attr("r", "5px")
-    .attr("fill", "red")
-    .on("mouseover", function () {
-      d3.select(this).attr("fill", "orange").attr("r", "10px");
-    })
-    .on("mouseout", function () {
-      d3.select(this).attr("fill", "red").attr("r", "5px");
-    });
-
-  return svg;
-}
-import { slider } from "@jashkenas/inputs"
-```
-
-```{ojs}
-tex`\vec{d}_H(X,Y)=${scaleB}`;
-tex`\vec{d}_H(Y,X)=${scaleA}`;
-tex`d_H(X,Y)=\max\{\vec{d}_H(X,Y), \vec{d}_H(Y,X)\}=\text{max\{ }${scaleA}, ${scaleB}\text{ \}}=${Math.max(scaleA, scaleB)}`;
-```
-
-## <green>Homological</green> Guarantees
-
-Estimate *only* the <green>Betti numbers</green> of $M$ (at various dimension $k$):
-
-- [<green>$k=0$</green>] number of connected components 
-- [<green>$k=1$</green>] cycles/loops
-- [<green>$k\geq2$</green>] voids, etc.
-
-  
-## <green>Topological</green> Guarantees {.smaller}
-
-Construct a topological space $\widetilde{M}$ from $X$ to retain the topology of $M$, i.e., $M\simeq\widetilde{M}$ in some appropriate sense:
-
-. . . 
-
-<red>Hidden</red> shape $M$:
-
-![](circle-1.png){fig-align="center"}
-
-. . . 
-
-<green>Reconstruction</green> $\widetilde{M}$:
-
-::: {layout-ncol="3"}
-
-
-![1. <green>homotopy equivalent</green>](mobius.png){width="80%"}
-
-![2. <green>homeomorphic</green>](circle-2.png){width="100%"}
-
-![3. <green>geometrically-close</green><br> in e.g. Hausdorff distance](circle-3.png){width="100%"}
-
-:::
-
-
-## {background-iframe="https://www.smajhi.com/shape-reconstruction" background-interactive="true"}
-
-## The <green>Theme</green> of <red>My Research</red>
-
-- Provide a <green>window</green> of *resolutions* or *scales* for the Vietoris--Rips complexes for a <green>topologically-faithful</green> reconstruction
-- Design provable reconstruction algorithms particularly for <red>bad</red> shapes
-- Reconstruction under different noise models, e.g. the <green>Gromov--Hausdorff</green> distance
-- Probabilistic guarantees in the face  of <red>random samples</red>
-
-# II. Reconstruction via <green>Vietoris--Rips Complexes</green> {background-image="drawing.png" background-opacity="0.3"}
-
-## Gromov's Perspective {.smaller}
----Metric structures of Riemann & non-Riemann Spaces, *page100* 
-
-:::{.columns}
-
-:::{.column width="60%"}
-> Let $X$ be a length metric space...given by $\varepsilon$-nets $X_\varepsilon^{0}$ in $X$ which Hausdorff converges $X$...
-:::
-
-:::{.column  width="40%"}
-![](gromov-1.png)
-:::
-:::
-
-. . . 
-
-:::{.columns}
-
-:::{.column  width="60%"}
-> ...One can turn such a space into a path metric space, namely a graph $X_\varepsilon^{1}\subset X$ with $X_\varepsilon^{0}$ as its vertex set, and where two points $x$ and $y$ in $X_\varepsilon^{1}$ within distance $\delta\leq\delta_\varepsilon$ joined by an edge of length $\delta$.
-
-
-:::
-
-:::{.column  width="40%"}
-![](gromov-2.png)
-:::
-:::
-
-. . . 
-
-> ...fll in the small triangles of edges in the graph $X_\varepsilon^{1}$ by actual $2$-dimensional triangles to obtain $X_\varepsilon^{2}\subset X$, then $\pi_1(X_\varepsilon^{2})=\pi_1(X)$ for $\varepsilon,\delta_\varepsilon\to0$ with $\varepsilon/\delta_\varepsilon\to\infty$.
-
 ## The Vietoris--Rips Complexes {.smaller}
 
 :::{.columns}
@@ -408,14 +165,114 @@ viewof btn = Inputs.button("clear", {
 
 :::
 
+# The <red>Problem</red> of <green>Shape Reconstruction</green> {background-image="drawing.png" background-opacity="0.3" .smaller}
 
-## Our Motivation {background-image="drawing.png" background-opacity="0.2"}
+## Point Cloud {.smaller}
+![A sample](sample_wedge.png)
+
+## Learn Topological and Geometric Features {.smaller}
+![A Reconstruction](wedge.png)
+
+- The <green>topology</green> is the wedge of two circles (two $1$-dimensional <red>cycles</red>)
+- The <green>geometry</green> is graph-like
+
+## <span class="green">Good</span> Shapes {.smaller}
+
+:::{layout-ncol="2"}
+![Circle](circle.png)
+
+![Donut](torus.png){width="100%"}
+:::
+
+- <green>Abstract</green> Riemannian manifolds
+- <green>Submanifolds</green> of $\mathbb{R}^N$
+  
+## <span class="red">Bad</span> Shapes {.smaller}
+![Source: Kyoto City Official Traval Guide](map.png)
+
+## A Real Application {.smaller}
+![The City of Berlin](berlin.jpg)
+
+Q: How to draw the map of the city from a noisy point-cloud of GPS locations?
+
+## A Reconstruction of Berlin {.smaller}
+![Source: mapconstruction.org](mahmuda.jpg)
+
+
+## <red>$\mathbb M$a$\tau$hem$\alpha$t$\iota$cal</red> Formulation {background-image="drawing.png" background-opacity="0.3"}
+
+
+- <green>**Shape**</green>: A *Shape* is modeled as a metric space $(M,d_M)$
+  - <green>Riemannian manifold</green>
+  - <red>metric graph</red>
+  - <red>general metric *curvature* spaces</red>
+
+- <green>**Sample**</green>: A *finite* metric space $(X,d_X)$ *close* to $M$
+
+    - small <green>Hausdorff</green> proximity when both $M,X\subset\mathbb R^d$
+    - *alternatively*, small <red>Gromov--Hausdorff</red> distance when abstract.
+
+
+## <green>Reconstruction</green> Goals
+
+- <span class="green">**Goal**</span>: Infer the topology of $M$ from $X$.
+
+    - Estimate only the Betti numbers---number of connected components, cycles, voids, etc---of $M$.
+
+    - construct a topological space $\widetilde{M}$ from $X$ to retain the topology of $M$, i.e., $M\simeq\widetilde{M}$ in some appropriate sense.
+      - homotopy equivalent
+      - homeomorphic
+      - geometrically close
+  
+## The <green>Theme</green> of <red>the Research</red>
+
+- Provide a <green>window</green> of *resolutions* or *scales* for the Vietoris--Rips complexes for a <green>topologically-faithful</green> reconstruction
+- Design provable reconstruction algorithms particularly for <red>bad</red> shapes
+- Reconstruction under different noise models, e.g. the <green>Gromov--Hausdorff</green> distance
+- Probabilistic guarantees in the face  of <red>random samples</red>
 
 
 - Understand the <green>topology</green> of $\mathcal{R}_\beta(X)$ 
 - When is the homology of $\mathcal{R}_\beta(X)$ <green>finitely</green> generated?
 - Alternative to the <green>Nerve Lemma</green> for Vietoris--Rips complexes
 - Implications in <green>Shape Reconstruction</green>
+
+
+# Reconstruction via <green>Vietoris--Rips Complexes</green> {background-image="drawing.png" background-opacity="0.3"}
+
+## Gromov's Perspective {.smaller}
+---Metric structures of Riemann & non-Riemann Spaces, *page100* 
+
+:::{.columns}
+
+:::{.column width="60%"}
+> Let $X$ be a length metric space...given by $\varepsilon$-nets $X_\varepsilon^{0}$ in $X$ which Hausdorff converges $X$...
+:::
+
+:::{.column  width="40%"}
+![](gromov-1.png)
+:::
+:::
+
+. . . 
+
+:::{.columns}
+
+:::{.column  width="60%"}
+> ...One can turn such a space into a path metric space, namely a graph $X_\varepsilon^{1}\subset X$ with $X_\varepsilon^{0}$ as its vertex set, and where two points $x$ and $y$ in $X_\varepsilon^{1}$ within distance $\delta\leq\delta_\varepsilon$ joined by an edge of length $\delta$.
+
+
+:::
+
+:::{.column  width="40%"}
+![](gromov-2.png)
+:::
+:::
+
+. . . 
+
+> ...fll in the small triangles of edges in the graph $X_\varepsilon^{1}$ by actual $2$-dimensional triangles to obtain $X_\varepsilon^{2}\subset X$, then $\pi_1(X_\varepsilon^{2})=\pi_1(X)$ for $\varepsilon,\delta_\varepsilon\to0$ with $\varepsilon/\delta_\varepsilon\to\infty$.
+
 
 
 ## Hausmann's Theorem {.smaller}
@@ -608,33 +465,46 @@ $$ for some $0<\xi<1/14$. Then, $\mathcal R_\beta(S)\simeq M$.
 
 :::
 
-# III. Beyond Manifolds {background-image="drawing.png" background-opacity="0.3"}
+# <red>Beyond</red> Manifolds {background-image="drawing.png" background-opacity="0.3"}
 
-## Quantitative Latschev's Theorem 
+## Challenges
 - <red>Bad</red> spaces are ubiquitous in applications
   - manifolds with boundary or not a topological manifold
   - stratefied manifolds
   - Euclidean subsets with vanishing reach (due to corners)
-
+  - A single Rips complex fails to be topologicall faithful, no matter the sample density 
 - <red>Challenges</red> in extending Latschev's theorem
   - defining <green>convexity radius</green> and <green>sectional curvatures</green> beyond closed Riemannian manifolds?
   - extending <green>Jung's theorem</green>
 
-. . . 
+## Bounded <green>Curvature</green> Spaces {.smaller}
+- <green>Length space</green>: A metric space with an *instrinsic* metric
+- <green>Geodesically complete</green>: a pair can be joined by a length-minimizing path
+- $\mathrm{CAT}(\kappa)$: geodesic triangles are "slimmer" than corresponding "model triangles" in a standard space of constant curvature $\kappa$.
+- <red>Examples</red>: 
+  - Closed Riemannian manifolds
+  - Submanifolds of $\mathbb{R}^N$
+  - stratefied manifolds
+  - metric graphs
+  - embedded graphs in $\mathbb{R}^N$
+  - Euclidean Polytopes
+
+- Lastchev's Theorem for $\mathrm{CAT}(\kappa)$ Spaces [@2406.04259]
+
+## Euclidean Subset Reconstruction 
 
 ::::{.callout-tip icon="false" .nonincremental style="font-size: 0.8em"}
-## Lastchev's Theorem for $\mathrm{CAT}(\kappa)$ Spaces [@2406.04259]
-*Length spaces* with <green>curvature</green> bounded (above) by $\kappa\in\mathbb{R}$ in the sense of Aleksandrov 
+## Euclidean Subsets [@2406.04259]
 
--  Intuitively, triangles in a $\mathrm{CAT}(\kappa)$ space are "slimmer" than corresponding "model triangles" in a standard space of constant curvature $\kappa$.
 :::
 
-# IV. Geometric Reconstruction {background-image="drawing.png" background-opacity="0.3"}
+# Back to Gromov
 
-# V. Future Directions {background-image="drawing.png" background-opacity="0.3"}
+# Future Directions {background-image="drawing.png" background-opacity="0.3"}
 
 - Hausmann's constant is not optimal
 - Are the better constants <green>$\epsilon_0$</green> and <red>$\delta$</red> for the quantitative Latschev's theorem?
+
 
 
 ## References {background-image="drawing.png" background-opacity="0.3"}
