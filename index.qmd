@@ -491,11 +491,41 @@ $$ for some $0<\xi<1/14$. Then, $\mathcal R_\beta(S)\simeq M$.
 
 - Lastchev's Theorem for $\mathrm{CAT}(\kappa)$ Spaces [@2406.04259]
 
-## Euclidean Subset Reconstruction 
+## Euclidean Subset Reconstruction {.smaller}
+- The sample $S$ comes equipped with $\|\cdot\|$
+- <red>Euclidean</red> Vietoric--Rips $\mathcal{R}_\beta(S)$ fails almost aways for any scale $\beta$
+- Remedy?
+  
+. . . 
 
-::::{.callout-tip icon="false" .nonincremental style="font-size: 0.8em"}
+
+:::{.columns}
+:::{.column width="60%"}
+**<green>$\varepsilon$-path Metric</green>:**
+
+- Fix an $\varepsilon>0$, proportional to $d_H(S,X)$
+
+- For any two sample points $a,b\in S$, define $d_S^\varepsilon(a,b)$ to be the shortest distance when hopping over the points of $S$ with a step size of $\varepsilon$.
+:::
+
+:::{.column width="40%"}
+![$\varepsilon$-path Metric on $S$](path-metric.png)
+:::
+
+:::
+
+- For a dense enough sample $S$ of $X$, $d^\varepsilon_S$ is quasi-isometric to the length metric on $X$
+- Consider the Vietoris--Rips of $S$ under $d_\varepsilon$; call it $\mathcal{R}_\beta^\varepsilon(S)$
+  
+
+
+##
+
+::::{.callout-tip icon="false" .nonincremental style="font-size: 0.7em"}
 ## Euclidean Subsets [@2406.04259]
-
+Let $X$ be a geodesic subspace of $\mathbb R^N$.
+Let $\xi\in\left(0,1\right)$ and $\beta>0$ be fixed numbers. 
+$0<\varepsilon\leq\beta$ such that $\delta^\varepsilon_{\beta}(X)\leq1+\left(\frac{\xi}{1+\xi}\right)$, then for any compact subset $S\subset\mathbb R^N$ with $d_H(X,S)<\frac{1}{2}\xi\varepsilon$, we have $\mathcal{R}_\beta^\varepsilon(S)\simeq X$.
 :::
 
 # Back to Gromov
