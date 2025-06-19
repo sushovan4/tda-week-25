@@ -4,7 +4,7 @@ title-slide-attributes:
   data-background-image: "drawing.png"
   data-background-opacity: "0.3"
 subtitle: <green>TDA Week, Kyoto University, 2025</green>
-author: "<b>Sushovan Majhi</b>, *George Washington University, DC*<br><br><i>with</i>: <green>Rafal Komendarczyk</green> & <green>Atish Mitra</green>"
+author: "<b>Sushovan Majhi</b>, *George Washington University, DC*"
 fig-cap-location: bottom
 format: 
     revealjs:
@@ -20,22 +20,96 @@ editor:
 html-math-method: mathml
 ---
 
-# Today's Agenda
-- Our motivation
-- <green>Hausmann</green>'s *curious* question
+# The <red>Problem</red> of <green>Shape Reconstruction</green> {background-image="drawing.png" background-opacity="0.3"}
+
+
+<!--
+# Today's Talk
+- The *finite* <green>reconstruction problem</green>
+- <green>Vietoris--Rips</green> complexes and their <green>shadow</green>
+- From <green>Gromov</green> to <green>Hausmann</green>'s *curious* question
 - <green>Latschev</green>'s remarkable (*but* <red>qualitative</red>!) answer
-- *Finite* <green>reconstruction problem</green>
 - <green>Quantitative</green> Latschev's theorem
-    - *abstract* manifolds
-    - *Euclidean* submanifolds
-- Extension to $\mathrm{CAT}(\kappa)$ Spaces
+  - *abstract* manifolds, *Euclidean* submanifolds, general geodesic Spaces
+- Back to Gromov: geometric reconstruction  
 - <red>Questions</red>
 
-## The Vietoris--Rips Complexes {.smaller}
+-->
+
+## Point Cloud {.smaller}
+![A sample](sample_wedge.png)
+
+## Learn Topological and Geometric Features {.smaller}
+![A Reconstruction](wedge.png)
+
+- The <green>topology</green> is the wedge of two circles (two $1$-dimensional <red>cycles</red>)
+- The <green>geometry</green> is graph-like
+
+## <span class="green">Good</span> Shapes {.smaller}
+
+:::{layout-ncol="2"}
+![Circle](circle.png)
+
+![Donut](torus.png){width="100%"}
+:::
+
+- <green>Abstract</green> Riemannian manifolds
+- <green>Submanifolds</green> of $\mathbb{R}^N$
+  
+## <span class="red">Bad</span> Shapes {.smaller}
+![Source: Kyoto City Official Traval Guide](map.png)
+
+## A Real Application {.smaller}
+![The City of Berlin](berlin.jpg)
+
+Q: How to draw the map of the city from a noisy point-cloud of GPS locations?
+
+## A Reconstruction of Berlin {.smaller}
+![Source: mapconstruction.org](mahmuda.jpg)
+
+
+## <red>$\mathbb M$a$\tau$hem$\alpha$t$\iota$cal</red> Formulation {background-image="drawing.png" background-opacity="0.3"}
+
+
+- <green>**Shape**</green>: A *Shape* is modeled as a metric space $(X,d_X)$
+  - <green>Riemannian manifold</green>
+  - <red>metric graph</red>
+  - <red>general metric *curvature* spaces</red>
+
+- <green>**Sample**</green>: A *finite* metric space $(S,d_S)$ *close* to $X$
+
+    - small <green>Hausdorff</green> proximity when both $S,X\subset\mathbb R^d$
+    - *alternatively*, small <red>Gromov--Hausdorff</red> distance when abstract
+
+
+## <green>Reconstruction</green> Goals
+
+- <span class="green">**Goal**</span>: Infer the topology of $X$ from $S$.
+
+    - <gray>Estimate only the Betti numbers---number of connected components, cycles, voids, etc---of $X$</gray>
+
+    - <green>construct</green> a topological space $\widehat{X}$ from $S$ to <green>retain the topology</green> of $X$ in some appropriate sense
+      - homotopy equivalent
+      - homeomorphic
+      - geometrically close (in <green>Hausdorff distance</green>)
+  
+## My <green>Motivation</green>
+
+- Provide a <green>window</green> of *scales* for the Vietoris--Rips complexes for a <green>topologically-faithful</green> reconstruction
+- Design provable reconstruction algorithms particularly for <red>bad</red> shapes
+- Topological perspective on Manifold and graph <green>hypotheses</green> for <red>random data</red>
+  - *Geometric Whitney's Theorem* by Fefferman et al.
+- Understand the <green>topology</green> of $\mathcal{R}_\beta(X)$ and their shadow
+- When is the homology of $\mathcal{R}_\beta(X)$ (and their shadow) <green>finitely</green> generated?
+
+
+# Reconstruction via <green>Vietoris--Rips Complexes</green> {background-image="drawing.png" background-opacity="0.3"}
+
+## The Vietoris--Rips Complexes
 
 :::{.columns}
 
-:::{.column width="40%"}
+:::{.column width="50%"}
 - a metric space $(X,d_X)$
   
 - a scale $\beta>0$ 
@@ -43,18 +117,18 @@ html-math-method: mathml
 - $\mathcal{R}_\beta(X)$ is an abstract simplicial complex
    
   - $X$ is the <green>vertex set</green>
-  - each <green>subset</green> $A\subset X$ of $(k+1)$ points with <green>diameter</green> at most $\beta$ is a $k$-simplex.
+  - each <green>subset</green> $A\subset X$ of $(k+1)$ points with <green>diameter</green> less than $\beta$ is a $k$-simplex.
 
 :::
 
 
-:::{.column  width="60%"}
+:::{.column  width="50%"}
 
 
 ```{ojs}
 V = [];
 {
-  const height = "500px";
+  const height = "450px";
   const container = d3.create("div").style("position", "relative");
   let svg = container
     .append("svg")
@@ -165,81 +239,6 @@ viewof btn = Inputs.button("clear", {
 
 :::
 
-# The <red>Problem</red> of <green>Shape Reconstruction</green> {background-image="drawing.png" background-opacity="0.3" .smaller}
-
-## Point Cloud {.smaller}
-![A sample](sample_wedge.png)
-
-## Learn Topological and Geometric Features {.smaller}
-![A Reconstruction](wedge.png)
-
-- The <green>topology</green> is the wedge of two circles (two $1$-dimensional <red>cycles</red>)
-- The <green>geometry</green> is graph-like
-
-## <span class="green">Good</span> Shapes {.smaller}
-
-:::{layout-ncol="2"}
-![Circle](circle.png)
-
-![Donut](torus.png){width="100%"}
-:::
-
-- <green>Abstract</green> Riemannian manifolds
-- <green>Submanifolds</green> of $\mathbb{R}^N$
-  
-## <span class="red">Bad</span> Shapes {.smaller}
-![Source: Kyoto City Official Traval Guide](map.png)
-
-## A Real Application {.smaller}
-![The City of Berlin](berlin.jpg)
-
-Q: How to draw the map of the city from a noisy point-cloud of GPS locations?
-
-## A Reconstruction of Berlin {.smaller}
-![Source: mapconstruction.org](mahmuda.jpg)
-
-
-## <red>$\mathbb M$a$\tau$hem$\alpha$t$\iota$cal</red> Formulation {background-image="drawing.png" background-opacity="0.3"}
-
-
-- <green>**Shape**</green>: A *Shape* is modeled as a metric space $(M,d_M)$
-  - <green>Riemannian manifold</green>
-  - <red>metric graph</red>
-  - <red>general metric *curvature* spaces</red>
-
-- <green>**Sample**</green>: A *finite* metric space $(X,d_X)$ *close* to $M$
-
-    - small <green>Hausdorff</green> proximity when both $M,X\subset\mathbb R^d$
-    - *alternatively*, small <red>Gromov--Hausdorff</red> distance when abstract.
-
-
-## <green>Reconstruction</green> Goals
-
-- <span class="green">**Goal**</span>: Infer the topology of $M$ from $X$.
-
-    - Estimate only the Betti numbers---number of connected components, cycles, voids, etc---of $M$.
-
-    - construct a topological space $\widetilde{M}$ from $X$ to retain the topology of $M$, i.e., $M\simeq\widetilde{M}$ in some appropriate sense.
-      - homotopy equivalent
-      - homeomorphic
-      - geometrically close
-  
-## The <green>Theme</green> of <red>the Research</red>
-
-- Provide a <green>window</green> of *resolutions* or *scales* for the Vietoris--Rips complexes for a <green>topologically-faithful</green> reconstruction
-- Design provable reconstruction algorithms particularly for <red>bad</red> shapes
-- Reconstruction under different noise models, e.g. the <green>Gromov--Hausdorff</green> distance
-- Probabilistic guarantees in the face  of <red>random samples</red>
-
-
-- Understand the <green>topology</green> of $\mathcal{R}_\beta(X)$ 
-- When is the homology of $\mathcal{R}_\beta(X)$ <green>finitely</green> generated?
-- Alternative to the <green>Nerve Lemma</green> for Vietoris--Rips complexes
-- Implications in <green>Shape Reconstruction</green>
-
-
-# Reconstruction via <green>Vietoris--Rips Complexes</green> {background-image="drawing.png" background-opacity="0.3"}
-
 ## Gromov's Perspective {.smaller}
 ---Metric structures of Riemann & non-Riemann Spaces, *page100* 
 
@@ -271,7 +270,7 @@ Q: How to draw the map of the city from a noisy point-cloud of GPS locations?
 
 . . . 
 
-> ...fll in the small triangles of edges in the graph $X_\varepsilon^{1}$ by actual $2$-dimensional triangles to obtain $X_\varepsilon^{2}\subset X$, then $\pi_1(X_\varepsilon^{2})=\pi_1(X)$ for $\varepsilon,\delta_\varepsilon\to0$ with $\varepsilon/\delta_\varepsilon\to\infty$.
+> ...fll in the small triangles of edges in the graph $X_\varepsilon^{1}$ by actual $2$-dimensional triangles to obtain $X_\varepsilon^{2}\subset X$, then $\pi_1(X_\varepsilon^{2})=\pi_1(X)$ for <red>$\varepsilon,\delta_\varepsilon\to0$ with $\varepsilon/\delta_\varepsilon\to\infty$</red>.
 
 
 
@@ -279,9 +278,10 @@ Q: How to draw the map of the city from a noisy point-cloud of GPS locations?
 
 :::{.callout-tip icon="false"}
 ## @hausmann_1995
-For any closed Riemannian manifold $M$ and $0<\beta<\rho(M)$, the Vietoris--Rips complex $\mathcal{R}_\beta(M)$ is *homotopy equivalent* to $M$.
+For any *closed* <green>Riemannian manifold</green> $M$ and $0<\beta<\rho(M)$, the Vietoris--Rips complex $\mathcal{R}_\beta(M)$ is *homotopy equivalent* to $M$.
 :::
 
+. . . 
 
 ::: {.columns}
 
@@ -353,6 +353,7 @@ What about the Vietoris--Rips complex of a <green>finite</green>, dense subset $
 
 :::: {.columns}
 
+
 ::: {.column width="70%"}
 **Gromov--Hausdorff Distance:**  
 
@@ -365,7 +366,6 @@ What about the Vietoris--Rips complex of a <green>finite</green>, dense subset $
 ::: {.column width="30%"}
 ![](gh.png){fig-align="center" width="400"}
 :::
-
 :::
 
 
@@ -396,7 +396,7 @@ $$
 :::{.callout-tip icon="false"}
 ## Metric Graph Reconstruction [*J. Appl. & Comp. Top., @Majhi2023*]
 Let $(G,d_G)$ be a compact, path-connected metric graph, $(S,d_S)$ a metric space, and $\beta>0$ a number such that $$3d_{GH}(G,S)<\beta<\frac{3}{4}\rho(G).$$ 
-Then, $\mathcal R_\beta(S)\simeq G$
+Then, $\mathcal R_\beta(S)\simeq G$.
 
 :::
 
@@ -469,19 +469,22 @@ $$ for some $0<\xi<1/14$. Then, $\mathcal R_\beta(S)\simeq M$.
 
 ## Challenges
 
-- <red>Bad</red> spaces are ubiquitous in applications
+- <red>Bad</red> shapes are ubiquitous in applications
   - manifolds with boundary or not a topological manifold
   - stratefied manifolds
   - Euclidean subsets with vanishing reach (due to corners)
-  - A single Rips complex fails to be topologicall faithful, no matter the sample density 
+- A *single* Rips complex <red>fails</red> to be topologically faithful, no matter the sample density 
+
+<!--
 - <red>Challenges</red> in extending Latschev's theorem
   - defining <green>convexity radius</green> and <green>sectional curvatures</green> beyond closed Riemannian manifolds?
   - extending <green>Jung's theorem</green>
+-->
 
-## Bounded <green>Curvature</green> Spaces {.smaller}
+## Metric Spaces of <green>Curvature</green> $\leq\kappa$ {.smaller}
 - <green>Length space</green>: A metric space with an *instrinsic* metric
 - <green>Geodesically complete</green>: a pair can be joined by a length-minimizing path
-- $\mathrm{CAT}(\kappa)$: geodesic triangles are "slimmer" than corresponding "model triangles" in a standard space of constant curvature $\kappa$.
+- geodesic triangles are "slimmer" than corresponding "model triangles" in a standard space of constant curvature $\kappa$.
 
 - <red>Examples</red>: 
   - Closed Riemannian manifolds
@@ -491,7 +494,7 @@ $$ for some $0<\xi<1/14$. Then, $\mathcal R_\beta(S)\simeq M$.
   - embedded graphs in $\mathbb{R}^N$
   - Euclidean Polytopes
 
-- Lastchev's Theorem for $\mathrm{CAT}(\kappa)$ Spaces [@2406.04259]
+- <green>Quantitative</green> Lastchev's Theorem for $\mathrm{CAT}(\kappa)$ Spaces [@2406.04259]
 
 ## Euclidean Subset Reconstruction {.smaller}
 - The sample $S$ comes equipped with $\|\cdot\|$
@@ -507,7 +510,7 @@ $$ for some $0<\xi<1/14$. Then, $\mathcal R_\beta(S)\simeq M$.
 
 - Fix an $\varepsilon>0$, proportional to $d_H(S,X)$
 
-- For any two sample points $a,b\in S$, define $d_S^\varepsilon(a,b)$ to be the shortest distance when hopping over the points of $S$ with a step size of $\varepsilon$.
+- For any two sample points $a,b\in S$, define $d_S^\varepsilon(a,b)$ to be the shortest distance when hopping over the points of $S$ with a step size $\leq\varepsilon$.
 :::
 
 :::{.column width="40%"}
@@ -521,20 +524,20 @@ $$ for some $0<\xi<1/14$. Then, $\mathcal R_\beta(S)\simeq M$.
 
 
 
-## Large-scale Distortion {.smaller}
+## <green>Large-scale</green> *Distortion* {.smaller}
 
 :::{.columns}
 
-:::{.column width="60%"}
+:::{.column width="70%"}
 
 - A finite sample around a corner does not see the corner
 - <red>Global distortion</red>: $$\delta(X)=\sup_{a\neq b}\frac{d^L_X(a,b)}{\|a-b\|}$$
-- <green>Large-scale distortion</green>: $$\delta^R_\beta(X)=\sup_{d^L(a,b)\geq R}\frac{d^L_X(a,b)}{d^L_{X^\varepsilon}(a,b)}$$
-- $\delta^\varepsilon_\beta(X)\to1$ as $\varepsilon\to0$, provided $X$ is compact
+- <green>Large-scale distortion</green>: $$\delta^\varepsilon_R(X)=\sup_{d^L(a,b)\geq R}\frac{d^L_X(a,b)}{d^L_{X^\varepsilon}(a,b)}$$
+- $\delta^\varepsilon_R(X)\to1$ as $\varepsilon\to0$, provided $X$ is a compact length space
 :::
 
-:::{.column width="40%"}
-![](graph.png){width="50%"}
+:::{.column width="30%"}
+![](graph.png){width="60%"}
 :::
 
 ::::
@@ -548,15 +551,14 @@ Let $\xi\in\left(0,1\right)$ and $\beta>0$ be fixed numbers.
 $0<\varepsilon\leq\beta$ such that $\delta^\varepsilon_{\beta}(X)\leq1+\left(\frac{\xi}{1+\xi}\right)$, then for any compact subset $S\subset\mathbb R^N$ with $d_H(X,S)<\frac{1}{2}\xi\varepsilon$, we have $\mathcal{R}_\beta^\varepsilon(S)\simeq X$.
 :::
 
-# <green>Geometric</green> Reconstruction 
-## Back to Gromov: <green>Geometric Shadow</green> {.smaller}
+# <green>Geometric</green> Reconstruction {background-image="drawing.png" background-opacity="0.3"}
 
+## Back to *Gromov*: Vietoris--Rips <green>Shadow</green> {.smaller}
 - Vietoris--Rips complexes are abstact, hence contain only topological information
-- **<green>Geometric reconstruction</green>**: entails constructing $\widetilde{X}\subset\mathbb R^N$ from samples so that $\widetilde{X}\simeq X$ and <green>$d_H(\widetilde{X}, X)$ is controlled</green>.
-- A good candidate for $\widetilde{X}$ is the *shadow* of a topologically-faithful Vietoris--Rips.
+- **<green>Geometric reconstruction</green>**: entails constructing $\widehat{X}\subset\mathbb R^N$ from samples so that $\widehat{X}\simeq X$ and <green>$d_H(\widehat{X}, X)$ is controlled</green>.
+- A good candidate for $\widehat{X}$ is the *shadow* of a topologically-faithful Vietoris--Rips.
 - **<green>Shadow</green>**: For simplicial complex $\mathcal K$ with vertices from $\mathbb R^N$ is the union of the (Euclidean) convex hulls of simpices $\sigma\in\mathcal K$
   - @Chambers2010; @adamaszek_homotopy_2017
-
 
 . . . 
 
@@ -564,6 +566,7 @@ $0<\varepsilon\leq\beta$ such that $\delta^\varepsilon_{\beta}(X)\leq1+\left(\fr
 
 ## Graph Reconstruction via Shadow {.smaller}
 
+<!--
 ::::{.callout-tip icon="false" .nonincremental style="font-size: 1em"}
 ## Topological Reconstruction [@graph_shadow]
 Let $G \subset \mathbb{R}^N$ be a compact, connected metric graph.  
@@ -573,20 +576,25 @@ If $S\subset \mathbb R^N$ is compact and $d_H(G,S)<\tfrac{1}{2}\xi\varepsilon$, 
 :::
 
 . . . 
+-->
 
 ::::{.callout-tip icon="false" .nonincremental style="font-size: 1em"}
 ## Geometric Reconstruction [@graph_shadow]
 Let $G \subset \mathbb{R}^2$ a graph.
 Fix any $\xi\in\left(0,\frac{1-\Theta}{6}\right)$.
 For any positive $\beta<\min\left\{\Delta(G),\frac{\ell(G)}{12}\right\}$, choose a positive $\varepsilon\leq\frac{(1-\Theta)(1-\Theta-6\xi)}{12}\beta$ such that $\delta^{\varepsilon}_{\beta}(G)\leq\frac{1+2\xi}{1+\xi}$. 
-If $S\subset \mathbb R^2$ is compact and $d_H(G,S)<\tfrac{1}{2}\xi\varepsilon$, then the shadow $sh(\mathcal R_\beta^\varepsilon(S))$ is homotopy equivalent to $G$. Moreover, $d_H(sh(\mathcal R_\beta^\varepsilon(S)),G)<\left(\beta+\frac{1}{2}\xi\varepsilon\right)$. 
+If $S\subset \mathbb R^2$ is compact and $d_H(G,S)<\tfrac{1}{2}\xi\varepsilon$, then the shadow $sh(\mathcal R_\beta^\varepsilon(S))$ is <green>homotopy equivalent</green> to $G$. 
+Moreover, <green>$d_H(sh(\mathcal R_\beta^\varepsilon(S)),G)<\left(\beta+\frac{1}{2}\xi\varepsilon\right)$</green>. 
 :::
+
+- <green>$\Theta\in(0,1)$</green>: depends on the angles between tangents of edges at the graph vertices
+- <green>$\Delta(G)$</green>: *Shadow radius* positive number for graphs with smooth edges
 
 # Future Directions {background-image="drawing.png" background-opacity="0.3"}
 
-- Geometric reconstruction of submanifolds via Rips shadow (*in preparation*)
-- Hausmann's constant is not optimal
-- Use discrete Morse theory to perform organized collapses of higher dimensional simplices of shadow for homeomorphic reconstruction
+- <green>Geometric reconstruction</green> of submanifolds via Rips shadow (*in preparation*)
+- Hausmann's constant is not <red>optimal</red>
+- Use <green>discrete Morse theory</green> to perform *organized collapses* of higher dimensional simplices of shadow for homeomorphic reconstruction
 
 
 ## References {background-image="drawing.png" background-opacity="0.3"}
